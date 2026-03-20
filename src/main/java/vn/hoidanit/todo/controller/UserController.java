@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import vn.hoidanit.todo.entity.ApiResponse;
 import vn.hoidanit.todo.entity.User;
 import vn.hoidanit.todo.service.UserService;
 
@@ -36,30 +37,38 @@ public class UserController {
 	}
 
 	@PostMapping("/users")
-	public ResponseEntity<User> createUser(@RequestBody User user) {
+	public ResponseEntity<ApiResponse<User>> createUser(@RequestBody User user) {
 		User created = userService.createUser(user);
-		return ResponseEntity.status(HttpStatus.CREATED).body(created);
+		var result = new ApiResponse<>(HttpStatus.CREATED, "createdUsers", created, null);
+		return ResponseEntity.status(HttpStatus.CREATED).body(result);
 	}
 
 	@GetMapping("/users")
-	public ResponseEntity<List<User>> getAllUsers() {
-		return ResponseEntity.ok(userService.getAllUsers());
+	public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
+		var result = new ApiResponse<>(HttpStatus.OK, "getAllUsers", userService.getAllUsers(), null);
+		return ResponseEntity.ok().body(result);
 	}
 
 	@GetMapping("/users/{id}")
-	public ResponseEntity<User> getUserById(@PathVariable Long id) {
-		return userService.getUserById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+	public ResponseEntity<ApiResponse<User>> getUserById(@PathVariable Long id) {
+		return userService.getUserById(id).map(user -> {
+			var response = new ApiResponse<>(HttpStatus.OK, "getUserById", user, null);
+			return ResponseEntity.ok(response);
+
+		}).orElse(ResponseEntity.notFound().build());
 	}
 
 	@PutMapping("/users/{id}")
-	public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+	public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable Long id, @RequestBody User user) {
 		User updated = userService.updateUser(id, user);
-		return ResponseEntity.ok(updated);
+		var result = new ApiResponse<>(HttpStatus.OK, "updatedUsers", updated, null);
+		return ResponseEntity.ok(result);
 	}
 
 	@DeleteMapping("/users/{id}")
-	public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+	public ResponseEntity<ApiResponse<User>> deleteUser(@PathVariable Long id) {
 		userService.deleteUser(id);
-		return ResponseEntity.noContent().build();
+		ApiResponse<User> result = new ApiResponse<>(HttpStatus.NO_CONTENT, "deletedUsers", null, null);
+		return ResponseEntity.ok(result);
 	}
 }
