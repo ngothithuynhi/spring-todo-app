@@ -1,0 +1,43 @@
+/*
+ * Author: Hỏi Dân IT - @hoidanit 
+ *
+ * This source code is developed for the course
+ * "Java Spring RESTful APIs - Xây Dựng Backend với Spring Boot".
+ * It is intended for educational purposes only.
+ * Unauthorized distribution, reproduction, or modification is strictly prohibited.
+ *
+ * Copyright (c) 2025 Hỏi Dân IT. All Rights Reserved.
+ */
+
+package vn.hoidanit.todo.controller.errors;
+
+import java.util.NoSuchElementException;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import vn.hoidanit.todo.entity.ApiResponse;
+
+@RestControllerAdvice
+public class GlobalException {
+
+	@ExceptionHandler(NoSuchElementException.class)
+	public ResponseEntity<ApiResponse<?>> handleNotFound(NoSuchElementException ex) {
+		var result = new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, "handleNotFound", null, ex.getMessage());
+
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+	}
+
+	/*
+	 * handle the rest exceptions
+	 */
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ApiResponse<?>> handleAllException(Exception ex) {
+		var result = new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, "handleAllException", null, ex.getMessage());
+
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+	}
+
+}

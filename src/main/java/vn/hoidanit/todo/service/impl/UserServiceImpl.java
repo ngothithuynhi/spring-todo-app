@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
 
 	public void deleteUser(Long id) {
 		if (!userRepository.existsById(id)) {
-			throw new NoSuchElementException("User not found");
+			throw new NoSuchElementException("User not found by Nhi");
 		}
 		userRepository.deleteById(id);
 	}
