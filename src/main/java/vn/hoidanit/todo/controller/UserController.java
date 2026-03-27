@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import vn.hoidanit.todo.entity.ApiResponse;
 import vn.hoidanit.todo.entity.User;
 import vn.hoidanit.todo.service.UserService;
@@ -37,7 +38,7 @@ public class UserController {
 	}
 
 	@PostMapping("/users")
-	public ResponseEntity<ApiResponse<User>> createUser(@RequestBody User user) {
+	public ResponseEntity<ApiResponse<User>> createUser(@Valid @RequestBody User user) {
 		User created = userService.createUser(user);
 		var result = new ApiResponse<>(HttpStatus.CREATED, "createdUsers", created, null);
 		return ResponseEntity.status(HttpStatus.CREATED).body(result);
